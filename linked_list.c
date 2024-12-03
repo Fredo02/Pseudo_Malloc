@@ -2,18 +2,18 @@
 #include <assert.h>
 
 void List_init(ListHead* head) {
-  head->first=0;
-  head->last=0;
-  head->size=0;
+  head->first = 0;
+  head->last = 0;
+  head->size = 0;
 }
 
 ListItem* List_find(ListHead* head, ListItem* item) {
   // linear scanning of list
-  ListItem* aux=head->first;
+  ListItem* aux = head->first;
   while(aux){
-    if (aux==item)
+    if (aux == item)
       return item;
-    aux=aux->next;
+    aux = aux->next;
   }
   return 0;
 }
@@ -38,17 +38,17 @@ ListItem* List_insert(ListHead* head, ListItem* prev, ListItem* item) {
 
   ListItem* next= prev ? prev->next : head->first;
   if (prev) {
-    item->prev=prev;
-    prev->next=item;
+    item->prev = prev;
+    prev->next = item;
   }
   if (next) {
-    item->next=next;
-    next->prev=item;
+    item->next = next;
+    next->prev = item;
   }
   if (!prev)
-    head->first=item;
+    head->first = item;
   if(!next)
-    head->last=item;
+    head->last = item;
   ++head->size;
   return item;
 }
@@ -61,20 +61,21 @@ ListItem* List_detach(ListHead* head, ListItem* item) {
   assert(instance);
 #endif
 
-  ListItem* prev=item->prev;
-  ListItem* next=item->next;
+  ListItem* prev = item->prev;
+  ListItem* next = item->next;
   if (prev){
-    prev->next=next;
+    prev->next = next;
   }
   if(next){
-    next->prev=prev;
+    next->prev = prev;
   }
-  if (item==head->first)
-    head->first=next;
-  if (item==head->last)
-    head->last=prev;
+  if (item == head->first)
+    head->first = next;
+  if (item == head->last)
+    head->last = prev;
   head->size--;
-  item->next=item->prev=0;
+  item->next = 0;
+  item->prev = 0;
   return item;
 }
 

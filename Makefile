@@ -1,17 +1,17 @@
-CC=gcc
-CCOPTS=--std=gnu99 -Wall -D_LIST_DEBUG_ 
-AR=ar
+CC = gcc
+CCOPTS = --std=gnu99 -Wall -D_LIST_DEBUG_ 
+AR = ar
 
-OBJS=pool_allocator.o\
+OBJS = pool_allocator.o\
      linked_list.o\
      bit_map.o\
      buddy_allocator.o
 
-HEADERS=linked_list.h  pool_allocator.h bit_map.h buddy_allocator.h
+HEADERS = linked_list.h  pool_allocator.h bit_map.h buddy_allocator.h
 
-LIBS=libbuddy.a
+LIBS = libbuddy.a
 
-BINS= buddy_test
+BINS = buddy_allocator_test
 
 .phony: clean all
 
@@ -25,7 +25,7 @@ libbuddy.a: $(OBJS)
 	$(AR) -rcs $@ $^
 	$(RM) $(OBJS)
 
-buddy_test: buddy_test.o $(LIBS)
+buddy_allocator_test: buddy_allocator_test.o $(LIBS)
 	$(CC) $(CCOPTS) -o $@ $^ -lm
 
 clean:

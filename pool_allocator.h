@@ -1,11 +1,11 @@
 #pragma once
 
 typedef enum {
-  Success=0x0,
-  NotEnoughMemory=-1,
-  UnalignedFree=-2,
-  OutOfRange=-3,
-  DoubleFree=-4
+  Success = 0x0,
+  NotEnoughMemory = -1,
+  UnalignedFree = -2,
+  OutOfRange = -3,
+  DoubleFree = -4
 } PoolAllocatorResult;
 
 typedef struct PoolAllocator{
