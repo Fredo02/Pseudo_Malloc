@@ -1,0 +1,6 @@
+# Ignore binary files in the bin folder
+bin/
+
+# Ignore object files in the object folder
+*.o
+object/
