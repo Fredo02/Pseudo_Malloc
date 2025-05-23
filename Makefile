@@ -32,6 +32,13 @@ $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(wildcard $(HDR_DIR)/*.h) | $(OBJ_DIR)
 $(OBJ_DIR)/%.o: $(TEST_DIR)/%.c $(wildcard $(HDR_DIR)/*.h) | $(OBJ_DIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+# Create directories if they don't exist
+$(BIN_DIR):
+	mkdir -p $(BIN_DIR)
+
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
 # Valgrind target
 valgrind: $(EXEC)
 	valgrind $(EXEC)
