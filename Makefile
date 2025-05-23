@@ -43,8 +43,13 @@ $(OBJ_DIR):
 valgrind: $(EXEC)
 	valgrind $(EXEC)
 
+# Run test_bitmap
+test_bitmap: $(BIN_DIR) $(OBJ_DIR) $(OBJ_FILES)
+	$(CC) $(CFLAGS) $(TEST_DIR)/test_bitmap.c $(SRC_FILES) -o $(BIN_DIR)/test_bitmap
+	$(BIN_DIR)/test_bitmap
+
 # Clean up build artifacts
 clean:
-	rm -rf $(OBJ_DIR) $(BIN_DIR)
+	rm -rf $(OBJ_DIR)/* $(BIN_DIR)/*
 
 .PHONY: all clean valgrind
