@@ -20,7 +20,7 @@ void test_bitmap_getbytes() {
 void test_bitmap_init() {
     uint8_t buffer[4];
     BitMap bm;
-    bitmap_init(&bm, buffer, 25);  // 25 bits need 4 bytes (25+7)/8=4
+    bitmap_init(&bm, buffer, 25);
 
     assert(bm.buffer == buffer);
     assert(bm.buffer_size == 4);

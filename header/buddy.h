@@ -16,6 +16,6 @@ void buddy_init(BuddyAllocator* buddy);
 
 // Allocate/free memory from the buddy system
 void* buddy_alloc(BuddyAllocator* buddy, uint32_t size);
-void  buddy_free(BuddyAllocator* buddy, void* ptr);
+void buddy_free(BuddyAllocator* buddy, void* ptr);
 
 #endif
