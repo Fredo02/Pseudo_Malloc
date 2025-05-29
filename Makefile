@@ -15,14 +15,22 @@ TEST_FILES := $(wildcard $(TEST_DIR)/*.c)
 OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES)) \
 			 $(patsubst $(TEST_DIR)/%.c,$(OBJ_DIR)/%.o,$(TEST_FILES))
 
-# Executable name
+# Executable names
 EXEC := $(BIN_DIR)/main
+TEST_BITMAP := $(BIN_DIR)/test_bitmap
+TEST_BUDDY := $(BIN_DIR)/test_buddy
 
 # Default target
 all: $(BIN_DIR) $(OBJ_DIR) $(EXEC)
 
-# Link object files to create executable
-$(EXEC): $(OBJ_FILES)
+# Link object files to create executables
+$(EXEC): $(filter-out $(OBJ_DIR)/test_%, $(OBJ_FILES))
+	$(CC) $(CFLAGS) $^ -o $@
+
+$(TEST_BITMAP): $(OBJ_DIR)/test_bitmap.o $(filter-out $(OBJ_DIR)/test_buddy.o, $(OBJ_FILES))
+	$(CC) $(CFLAGS) $^ -o $@
+
+$(TEST_BUDDY): $(OBJ_DIR)/test_buddy.o $(filter-out $(OBJ_DIR)/test_bitmap.o, $(OBJ_FILES))
 	$(CC) $(CFLAGS) $^ -o $@
 
 # Compile source and test files to object files
@@ -39,22 +47,24 @@ $(BIN_DIR):
 $(OBJ_DIR):
 	mkdir -p $(OBJ_DIR)
 
-# Valgrind target
-valgrind: $(EXEC)
-	valgrind $(EXEC)
-
 # Run test_bitmap
-test_bitmap: $(BIN_DIR) $(OBJ_DIR) $(OBJ_FILES)
-	$(CC) $(CFLAGS) $(TEST_DIR)/test_bitmap.c $(SRC_FILES) -o $(BIN_DIR)/test_bitmap
-	$(BIN_DIR)/test_bitmap
+test_bitmap: $(TEST_BITMAP)
+	$(TEST_BITMAP)
+
+# Run test_bitmap with Valgrind
+valgrind_bitmap: $(TEST_BITMAP)
+	valgrind $(TEST_BITMAP)
 
 # Run test_buddy
-test_buddy: $(BIN_DIR) $(OBJ_DIR) $(OBJ_FILES)
-	$(CC) $(CFLAGS) $(TEST_DIR)/test_buddy.c $(SRC_FILES) -o $(BIN_DIR)/test_buddy
-	$(BIN_DIR)/test_buddy
+test_buddy: $(TEST_BUDDY)
+	$(TEST_BUDDY)
+
+# Run test_buddy with Valgrind
+valgrind_buddy: $(TEST_BUDDY)
+	valgrind $(TEST_BUDDY)
 
 # Clean up build artifacts
 clean:
 	rm -rf $(OBJ_DIR)/* $(BIN_DIR)/*
 
-.PHONY: all clean valgrind test_bitmap test_buddy
+.PHONY: all clean test_bitmap test_buddy valgrind_bitmap valgrind_buddy
