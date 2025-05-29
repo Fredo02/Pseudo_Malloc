@@ -19,6 +19,7 @@ OBJ_FILES := $(patsubst $(SRC_DIR)/%.c,$(OBJ_DIR)/%.o,$(SRC_FILES)) \
 EXEC := $(BIN_DIR)/main
 TEST_BITMAP := $(BIN_DIR)/test_bitmap
 TEST_BUDDY := $(BIN_DIR)/test_buddy
+TEST_ALLOCATOR := $(BIN_DIR)/test_allocator
 
 # Default target
 all: $(BIN_DIR) $(OBJ_DIR) $(EXEC)
@@ -27,10 +28,13 @@ all: $(BIN_DIR) $(OBJ_DIR) $(EXEC)
 $(EXEC): $(filter-out $(OBJ_DIR)/test_%, $(OBJ_FILES))
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_BITMAP): $(OBJ_DIR)/test_bitmap.o $(filter-out $(OBJ_DIR)/test_buddy.o, $(OBJ_FILES))
+$(TEST_BITMAP): $(OBJ_DIR)/test_bitmap.o $(filter-out $(OBJ_DIR)/test_%.o, $(OBJ_FILES))
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_BUDDY): $(OBJ_DIR)/test_buddy.o $(filter-out $(OBJ_DIR)/test_bitmap.o, $(OBJ_FILES))
+$(TEST_BUDDY): $(OBJ_DIR)/test_buddy.o $(filter-out $(OBJ_DIR)/test_%.o, $(OBJ_FILES))
+	$(CC) $(CFLAGS) $^ -o $@
+
+$(TEST_ALLOCATOR): $(OBJ_DIR)/test_allocator.o $(filter-out $(OBJ_DIR)/test_%.o, $(OBJ_FILES))
 	$(CC) $(CFLAGS) $^ -o $@
 
 # Compile source and test files to object files
@@ -63,8 +67,16 @@ test_buddy: $(TEST_BUDDY)
 valgrind_buddy: $(TEST_BUDDY)
 	valgrind $(TEST_BUDDY)
 
+# Run test_allocator
+test_allocator: $(TEST_ALLOCATOR)
+	$(TEST_ALLOCATOR)
+
+# Run test_allocator with Valgrind
+valgrind_allocator: $(TEST_ALLOCATOR)
+	valgrind $(TEST_ALLOCATOR)
+
 # Clean up build artifacts
 clean:
 	rm -rf $(OBJ_DIR)/* $(BIN_DIR)/*
 
-.PHONY: all clean test_bitmap test_buddy valgrind_bitmap valgrind_buddy
+.PHONY: all clean test_bitmap test_buddy valgrind_bitmap valgrind_buddy test_allocator valgrind_allocator
