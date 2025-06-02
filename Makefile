@@ -75,8 +75,16 @@ test_allocator: $(TEST_ALLOCATOR)
 valgrind_allocator: $(TEST_ALLOCATOR)
 	valgrind $(TEST_ALLOCATOR)
 
+# Run main executable
+run_main: $(EXEC)
+	$(EXEC)
+
+# Run main with Valgrind
+valgrind_main: $(EXEC)
+	valgrind $(EXEC)
+
 # Clean up build artifacts
 clean:
 	rm -rf $(OBJ_DIR)/* $(BIN_DIR)/*
 
-.PHONY: all clean test_bitmap test_buddy valgrind_bitmap valgrind_buddy test_allocator valgrind_allocator
+.PHONY: all clean test_bitmap test_buddy valgrind_bitmap valgrind_buddy test_allocator valgrind_allocator run_main valgrind_main
