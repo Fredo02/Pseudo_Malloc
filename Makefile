@@ -28,13 +28,13 @@ all: $(BIN_DIR) $(OBJ_DIR) $(EXEC)
 $(EXEC): $(filter-out $(OBJ_DIR)/test_%, $(OBJ_FILES))
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_BITMAP): $(OBJ_DIR)/test_bitmap.o $(filter-out $(OBJ_DIR)/test_%.o, $(OBJ_FILES))
+$(TEST_BITMAP): $(OBJ_DIR)/test_bitmap.o $(filter-out $(OBJ_DIR)/test_%.o $(OBJ_DIR)/main.o, $(OBJ_FILES))
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_BUDDY): $(OBJ_DIR)/test_buddy.o $(filter-out $(OBJ_DIR)/test_%.o, $(OBJ_FILES))
+$(TEST_BUDDY): $(OBJ_DIR)/test_buddy.o $(filter-out $(OBJ_DIR)/test_%.o $(OBJ_DIR)/main.o, $(OBJ_FILES))
 	$(CC) $(CFLAGS) $^ -o $@
 
-$(TEST_ALLOCATOR): $(OBJ_DIR)/test_allocator.o $(filter-out $(OBJ_DIR)/test_%.o, $(OBJ_FILES))
+$(TEST_ALLOCATOR): $(OBJ_DIR)/test_allocator.o $(filter-out $(OBJ_DIR)/test_%.o $(OBJ_DIR)/main.o, $(OBJ_FILES))
 	$(CC) $(CFLAGS) $^ -o $@
 
 # Compile source and test files to object files

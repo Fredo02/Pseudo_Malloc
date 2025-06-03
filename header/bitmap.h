@@ -9,7 +9,7 @@ typedef struct {
     uint32_t num_bits;      // Number of bits the bitmap can track
 } BitMap;
 
-// returns the number of bytes to store bits booleans
+// Returns the number of bytes to store bits booleans
 uint32_t BitMap_getBytes(uint32_t bits);
 
 // Initialize the bitmap with a pre-allocated buffer

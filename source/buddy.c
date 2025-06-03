@@ -44,14 +44,14 @@ void buddy_init(BuddyAllocator* buddy) {
 }
 
 // Returns the level (0 = 1MB, 10 = 1KB) for a given block size
-static uint32_t get_level(uint32_t block_size) {
+uint32_t get_level(uint32_t block_size) {
     uint32_t log2_block_size = 0;
     for (uint32_t tmp = block_size; tmp > 1; tmp >>= 1) log2_block_size++;
     return 20 - log2_block_size;  // 20 = log2(1MB)
 }
 
 // Finds the first free block index at the specified level
-static int32_t find_free_block(BuddyAllocator* buddy, uint32_t level) {
+int32_t find_free_block(BuddyAllocator* buddy, uint32_t level) {
     uint32_t start = (1 << level) - 1;
     uint32_t end = (1 << (level + 1)) - 1;
     for (uint32_t i = start; i < end; i++) {
@@ -79,8 +79,8 @@ static int32_t find_free_block(BuddyAllocator* buddy, uint32_t level) {
 }
 
 // Splits a block recursively from `current_level` down to `target_level`
-static void split_block(BuddyAllocator* buddy, uint32_t index, 
-                        uint32_t current_level, uint32_t target_level) {
+void split_block(BuddyAllocator* buddy, uint32_t index, 
+                  uint32_t current_level, uint32_t target_level) {
     for (uint32_t l = current_level; l < target_level; l++) {
         if (index >= buddy->split_bits.num_bits) break; // Guard split bitmap
         bitmap_set(&buddy->split_bits, index);
@@ -89,7 +89,7 @@ static void split_block(BuddyAllocator* buddy, uint32_t index,
 }
 
 // Finds the block index and level for a given memory offset
-static int32_t find_block_index(BuddyAllocator* buddy, uint32_t offset, uint32_t* out_level) {
+int32_t find_block_index(BuddyAllocator* buddy, uint32_t offset, uint32_t* out_level) {
     for (int32_t l = 10; l >= 0; l--) {
         uint32_t block_size = 1048576 >> l;
         if (block_size < 1024) continue;
@@ -107,12 +107,12 @@ static int32_t find_block_index(BuddyAllocator* buddy, uint32_t offset, uint32_t
 }
 
 // Merges free buddies upwards recursively
-static void merge_buddies(BuddyAllocator* buddy, uint32_t index, uint32_t level) {
+void merge_buddies(BuddyAllocator* buddy, uint32_t index, uint32_t level) {
     while (level < 10) {
         uint32_t parent_index = (index - 1) / 2;
         if (parent_index >= buddy->split_bits.num_bits) break; // Guard
 
-        uint32_t buddy_index = (index % 2 == 0) ? index - 1 : index + 1;
+        uint32_t buddy_index = index ^ 1;
         if (bitmap_is_set(&buddy->alloc_bits, buddy_index) || 
             bitmap_is_set(&buddy->split_bits, parent_index)) {
             break; // Buddy is allocated or parent is split
@@ -172,6 +172,11 @@ void buddy_free(BuddyAllocator* buddy, void* ptr) {
     uint32_t level;
     int32_t index = find_block_index(buddy, offset, &level);
     if (index == -1) return;
+
+    // Check double free
+    if (!bitmap_is_set(&buddy->alloc_bits, index)) {
+        return;
+    }
 
     bitmap_clear(&buddy->alloc_bits, index);
     merge_buddies(buddy, index, level);

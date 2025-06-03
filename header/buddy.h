@@ -18,4 +18,11 @@ void buddy_init(BuddyAllocator* buddy);
 void* buddy_alloc(BuddyAllocator* buddy, uint32_t size);
 void buddy_free(BuddyAllocator* buddy, void* ptr);
 
+// Auxiliary functions
+uint32_t get_level(uint32_t block_size);
+int32_t find_free_block(BuddyAllocator* buddy, uint32_t level);
+void split_block(BuddyAllocator* buddy, uint32_t index, uint32_t current_level, uint32_t target_level);
+int32_t find_block_index(BuddyAllocator* buddy, uint32_t offset, uint32_t* level);
+void merge_buddies(BuddyAllocator* buddy, uint32_t index, uint32_t level);
+
 #endif

@@ -22,7 +22,7 @@ static void initialize_buddy() {
 }
 
 void* my_malloc(size_t size) {
-    if (size == 0) return NULL;
+    if (size == 0 || size > (2ULL * 1024 * 1024 * 1024)) return NULL;
 
     // Handle small allocations with buddy allocator
     if (size < SMALL_THRESHOLD) {
